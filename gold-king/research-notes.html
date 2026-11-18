@@ -32,6 +32,7 @@ body.draw #ink{pointer-events:auto;cursor:crosshair}
 #bar .sw.act{border-color:#ffeb3b;outline:none}
 #bar .gap{width:10px;flex:none}
 #count{min-width:90px;text-align:center;flex:none}
+#bar select{font:bold 16px Arial,sans-serif;padding:8px 11px;border-radius:10px;border:0;background:#2e7d32;color:#fff;cursor:pointer;min-height:48px;flex:none;max-width:230px}
 .kicker{font:bold 13px Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#1b5e20;margin:0 0 6px}
 h2.q{font:bold 26px/1.25 Arial,sans-serif;color:#1b5e20;margin:0 0 12px}
 p.lead{font:20px/1.45 Arial,sans-serif;margin:0 0 14px}
@@ -160,6 +161,7 @@ body.projector .nitem{font-size:19px}
     <span id="count"></span>
     <button id="btn-check" type="button">Check</button>
     <button id="btn-next" type="button">Next ▶</button>
+    <select id="jump" title="Go to page"></select>
     <span class="gap"></span>
     <button id="btn-select" class="sec act" type="button" title="Taps work on the activity">✎ Off — Select</button>
     <button id="btn-pen" class="sec" type="button" title="Pen (ink)">✎ Pen</button>
@@ -696,6 +698,7 @@ function show(i){
   content.innerHTML=step.html();
   document.getElementById('stepLabel').textContent=step.label;
   document.getElementById('count').textContent=(cur+1)+' / '+STEPS.length;
+  document.getElementById('jump').value=cur;
   document.getElementById('prog').style.width = ((cur)/(STEPS.length-1)*100)+'%';
   document.getElementById('btn-back').disabled = cur===0;
   const start=document.getElementById('btn-start');
@@ -929,6 +932,10 @@ function tooClose(a,b){
   A.forEach(function(w){ if(set[w]) hit++; });
   return (hit/A.length)>0.72;
 }
+
+const jump=document.getElementById('jump');
+STEPS.forEach(function(P,i){const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+P.label;jump.appendChild(o);});
+jump.onchange=function(){ show(+jump.value); };
 
 document.getElementById('btn-back').onclick=function(){ show(cur-1); };
 document.getElementById('btn-next').onclick=function(){
