@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Researching &amp; Citing Evidence – Gold King Mine Spill</title>
+<style>
+html,body{margin:0;height:100%;background:#111;font-family:Arial,Helvetica,sans-serif;color:#111;overflow:hidden}
+button,input,textarea,select{font:inherit}
+:focus-visible{outline:3px solid #1565c0;outline-offset:2px}
+#app{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+#head{flex:none;height:56px;background:#2e7d32;color:#fff;display:flex;align-items:center;gap:14px;padding:0 16px;z-index:20}
+#head h1{font:bold 22px/1.15 Arial,sans-serif;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#head .sub{font:bold 15px Arial,sans-serif;background:#fff;color:#1b5e20;border-radius:8px;padding:5px 10px;flex:none}
+#progwrap{position:absolute;left:0;right:0;top:56px;height:8px;background:#1b5e20;z-index:21}
+#prog{height:100%;width:0;background:#ffeb3b;transition:width .25s}
+#wrap{position:absolute;left:0;right:0;top:64px;bottom:70px;overflow:auto;touch-action:pan-x pan-y;background:#dfe8dc}
+body.draw #wrap{touch-action:none}
+#slot{position:relative;margin:0 auto}
+#sizer{position:absolute;top:0;left:0;width:1280px;transform-origin:top left;box-sizing:border-box}
+#stage{position:relative;width:1280px;min-height:620px;background:#f4f8f2;box-shadow:0 0 0 3px #2e7d32;box-sizing:border-box;padding:22px 28px 48px}
+#ink{position:absolute;left:0;top:0;pointer-events:none;z-index:50;touch-action:none}
+body.draw #ink{pointer-events:auto;cursor:crosshair}
+#content{position:relative;z-index:1}
+#bar{position:absolute;left:0;right:0;bottom:0;height:70px;background:#1b1b1b;display:flex;align-items:center;justify-content:safe center;gap:6px;color:#fff;font:bold 16px Arial,sans-serif;overflow-x:auto;white-space:nowrap;padding:0 8px;z-index:30}
+#bar button,#bar .sw{font:bold 16px Arial,sans-serif;padding:8px 12px;border-radius:10px;border:0;background:#2e7d32;color:#fff;cursor:pointer;min-height:48px;min-width:48px;flex:none}
+#bar button:disabled{opacity:.35;cursor:default}
+#bar button.sec{background:#444}
+#bar button.act{outline:3px solid #ffeb3b}
+#bar .sw{width:44px;padding:0;border:3px solid #888}
+#bar .sw.act{border-color:#ffeb3b;outline:none}
+#bar .gap{width:10px;flex:none}
+#count{min-width:90px;text-align:center;flex:none}
+.kicker{font:bold 13px Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#1b5e20;margin:0 0 6px}
+h2.q{font:bold 26px/1.25 Arial,sans-serif;color:#1b5e20;margin:0 0 12px}
+p.lead{font:20px/1.45 Arial,sans-serif;margin:0 0 14px}
+.hint{font:16px/1.4 Arial,sans-serif;color:#333;background:#fff8e1;border-left:6px solid #f9a825;padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px}
+.source{background:#fff;border:2px solid #90a4ae;border-radius:10px;overflow:hidden;margin:0 0 16px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.source .sh{background:#1b4f72;color:#fff;padding:10px 16px}
+.source .sh .badge{display:inline-block;background:#fff;color:#1b4f72;font:bold 12px Arial,sans-serif;border-radius:6px;padding:2px 8px;margin-right:8px;letter-spacing:.03em}
+.source .sh h3{font:bold 22px/1.2 Arial,sans-serif;margin:6px 0 4px}
+.source .meta{font:16px/1.35 Arial,sans-serif;opacity:.95}
+.source .body{padding:14px 18px 16px;font:20px/1.55 Arial,sans-serif;color:#111}
+.source .body p{margin:0 0 12px}
+.source .body p:last-child{margin:0}
+.sent{cursor:pointer;border-radius:4px;padding:1px 2px;border:0;background:transparent;font:inherit;color:inherit;text-align:left;line-height:1.55;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.sent:hover,.sent:focus-visible{background:#e3f2fd}
+.sent.on{background:#fff59d;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:3px}
+.sent.ok{background:#c8e6c9;text-decoration:underline;text-decoration-color:#1b5e20;text-decoration-thickness:3px}
+.sent.bad{background:#ffcdd2;text-decoration:line-through}
+.sent.miss{background:#fff;outline:3px dashed #f9a825;outline-offset:2px}
+.choices{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:3px solid #546e7a;border-radius:10px;padding:12px 14px;font:19px/1.4 Arial,sans-serif;cursor:pointer;color:#111}
+.choice:hover,.choice:focus-visible{border-color:#1565c0;background:#e3f2fd}
+.choice.on{border-color:#1565c0;background:#bbdefb;box-shadow:0 0 0 2px #1565c0}
+.choice.ok{border-color:#1b5e20;background:#c8e6c9}
+.choice.bad{border-color:#b71c1c;background:#ffcdd2}
+.choice .tag{display:inline-block;font:bold 13px Arial,sans-serif;margin-right:8px;color:#1b4f72}
+.feedback{min-height:28px;font:18px/1.4 Arial,sans-serif;margin:8px 0 0;padding:10px 14px;border-radius:8px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#c8e6c9;color:#1b5e20;border:2px solid #1b5e20}
+.feedback.bad{background:#ffebee;color:#b71c1c;border:2px solid #c62828}
+.feedback.info{background:#e3f2fd;color:#0d47a1;border:2px solid #1565c0}
+.bank{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 14px}
+.cite-piece,.cite-slot{font:18px/1.3 Arial,sans-serif;padding:10px 12px;border-radius:8px;border:3px solid #546e7a;background:#fff;cursor:pointer;min-height:48px}
+.cite-piece{border-style:dashed}
+.cite-piece:hover{background:#e3f2fd;border-color:#1565c0}
+.cite-piece.used{opacity:.35;cursor:default}
+.assemble{min-height:64px;background:#fff;border:3px solid #2e7d32;border-radius:10px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.assemble .ph{color:#777;font:18px Arial,sans-serif}
+.preview{font:18px/1.45 Arial,sans-serif;background:#fff;border-left:6px solid #2e7d32;padding:10px 14px;margin-top:10px;border-radius:0 8px 8px 0}
+#coverbox{position:relative}
+#coverbox .srcbox{background:#fff;border:2px solid #90a4ae;border-radius:10px;padding:14px 16px;font:20px/1.5 Arial,sans-serif}
+#coverbox .lid{display:none;position:absolute;inset:0;background:#37474f;color:#fff;border-radius:10px;align-items:center;justify-content:center;font:bold 22px Arial,sans-serif;text-align:center;padding:16px}
+#coverbox.covered .lid{display:flex}
+#coverbox.covered .srcbox{visibility:hidden}
+textarea#para{width:100%;min-height:110px;box-sizing:border-box;font:20px/1.45 Arial,sans-serif;padding:12px;border-radius:10px;border:3px solid #546e7a;resize:vertical;margin:10px 0}
+.checks{list-style:none;padding:0;margin:10px 0 0}
+.checks li{margin:8px 0;font:19px/1.4 Arial,sans-serif}
+.checks input{width:22px;height:22px;margin-right:8px;vertical-align:middle}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.compare h3{font:bold 16px Arial,sans-serif;margin:0 0 6px;color:#1b5e20}
+.compare .col{background:#fff;border:2px solid #90a4ae;border-radius:10px;padding:12px;font:18px/1.45 Arial,sans-serif}
+.welcome ul{font:20px/1.5 Arial,sans-serif;margin:8px 0 16px;padding-left:24px}
+.welcome li{margin:6px 0}
+.bigbtn{display:inline-block;font:bold 22px Arial,sans-serif;background:#2e7d32;color:#fff;border:0;border-radius:12px;padding:14px 28px;min-height:56px;cursor:pointer}
+.muted{font:15px/1.4 Arial,sans-serif;color:#555;margin-top:16px}
+.done{text-align:left}
+.done .card{background:#fff;border:2px solid #2e7d32;border-radius:12px;padding:16px 18px;margin:0 0 12px;font:20px/1.45 Arial,sans-serif}
+body.projector #head h1{font-size:28px}
+body.projector #stage{padding:26px 32px 32px}
+body.projector h2.q{font-size:32px}
+body.projector p.lead,.welcome ul,.source .body,.choice{font-size:22px}
+body.projector .source .sh h3{font-size:26px}
+@media (prefers-reduced-motion:reduce){#prog{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="head">
+    <h1>Researching &amp; Citing Evidence</h1>
+    <span class="sub" id="stepLabel">Start</span>
+  </header>
+  <div id="progwrap" aria-hidden="true"><div id="prog"></div></div>
+  <div id="wrap">
+    <div id="slot">
+      <div id="sizer">
+        <div id="stage">
+          <div id="content"></div>
+          <canvas id="ink" width="1280" height="620" aria-hidden="true"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="bar">
+    <button id="btn-back" class="sec" type="button">◀ Back</button>
+    <span id="count"></span>
+    <button id="btn-check" type="button">Check</button>
+    <button id="btn-next" type="button">Next ▶</button>
+    <span class="gap"></span>
+    <button id="btn-select" class="sec act" type="button" title="Taps work on the activity">✎ Off — Select</button>
+    <button id="btn-pen" class="sec" type="button" title="Pen (ink)">✎ Pen</button>
+    <button id="btn-hl" class="sec" type="button" title="Highlighter">▒ Highlight</button>
+    <button class="sw act" data-c="#000000" type="button" title="Black" style="background:#000"></button>
+    <button class="sw" data-c="#e00000" type="button" title="Red" style="background:#e00000"></button>
+    <button class="sw" data-c="#1565c0" type="button" title="Blue" style="background:#1565c0"></button>
+    <button id="btn-erase" class="sec" type="button" title="Eraser">⌫ Eraser</button>
+    <button id="btn-undo" class="sec" type="button" title="Undo last mark (Ctrl+Z)">↶ Undo</button>
+    <button id="btn-clear" class="sec" type="button" title="Clear ink on this step">Clear ink</button>
+    <button id="btn-projector" class="sec" type="button" title="Larger text for the ViewBoard">Projector</button>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+const S1 = "EPA’s Report, Analyzing Biological Conditions in the Animas and San Juan Rivers Following Gold King Mine Release, presents the Agency’s analysis of the effects of Gold King Mine (GKM) release on select biological organisms living in the Animas and San Juan rivers.";
+const S2 = "Biological data gathered for this analysis were provided by federal, state and tribal partners in the Animas and San Juan watersheds.";
+const S3 = "After careful analysis and independent external peer review, EPA found that while some fish accumulated metals immediately after the GKM release event, levels returned to background conditions when samples were collected again the following spring.";
+const S4 = "Based on the analysis of the available pre- and post-release data, EPA also concluded there were no measurable changes to fish populations and bottom-dwelling organisms after the GKM release.";
+const T1 = "Around 10:30 am on August 5, 2015, an Environmental Protection Agency (EPA) crew ruptured a plug of rock and soil at the Gold King Mine north of Silverton, releasing an estimated 3 million gallons of contaminated wastewater.";
+const T2 = "This water ran into Cement Creek, a tributary of the Animas River, and was washed downstream through Durango to the San Juan River and eventually to Lake Powell.";
+const T3 = "The contaminated runoff turned the normally green waters of the Animas River a bright orange-brown and brought national attention to southwest Colorado and the hazardous legacy of mining in the San Juan Mountains.";
+const T4 = "Three million gallons of wastewater poured from the mine into nearby Cement Creek.";
+const T5 = "The wastewater contained high levels of lead, iron, arsenic, aluminum, cadmium, copper, and calcium, equivalent of what is released by the hundreds of mining sites around Silverton over a typical 300-day span.";
+const T6 = "The spillage caused the water in the Animas River to rapidly become more acidic, dropping from 7.8 to 5.8 on the pH scale.";
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function sent(id, text, ev){
+  return '<button type="button" class="sent" data-id="'+id+'" data-ev="'+ev+'" aria-pressed="false">'+esc(text)+'</button>';
+}
+function epaSource(clickable){
+  const body = clickable
+    ? '<p>'+sent('s1',S1,0)+' '+sent('s2',S2,0)+'</p><p>'+sent('s3',S3,1)+' '+sent('s4',S4,1)+'</p>'
+    : '<p>'+esc(S1)+' '+esc(S2)+'</p><p>'+esc(S3)+' '+esc(S4)+'</p>';
+  return '<article class="source" aria-label="Practice excerpt from US EPA">'+
+    '<div class="sh"><span class="badge">PRACTICE EXCERPT</span><div class="meta">Quoted from a real vetted source</div>'+
+    '<h3>Biological Response Report</h3>'+
+    '<div class="meta">US EPA &nbsp;·&nbsp; 2018 &nbsp;·&nbsp; https://www.epa.gov/goldkingmine/biological-response-report</div></div>'+
+    '<div class="body">'+body+'</div></article>';
+}
+function coSource(clickable){
+  const body = clickable
+    ? '<p>'+sent('t1',T1,1)+' '+sent('t2',T2,0)+' '+sent('t3',T3,0)+'</p><p>'+sent('t4',T4,1)+' '+sent('t5',T5,1)+' '+sent('t6',T6,1)+'</p>'
+    : '<p>'+esc(T1)+' '+esc(T2)+' '+esc(T3)+'</p><p>'+esc(T4)+' '+esc(T5)+' '+esc(T6)+'</p>';
+  return '<article class="source" aria-label="Practice excerpt from Colorado Encyclopedia">'+
+    '<div class="sh"><span class="badge">PRACTICE EXCERPT</span><div class="meta">Quoted from a real vetted source</div>'+
+    '<h3>Gold King Mine Spill</h3>'+
+    '<div class="meta">Colorado Encyclopedia &nbsp;·&nbsp; no date &nbsp;·&nbsp; https://coloradoencyclopedia.org/article/gold-king-mine-spill</div></div>'+
+    '<div class="body">'+body+'</div></article>';
+}
+
+const STEPS = [
+  {id:'welcome', label:'Welcome', kind:'read',
+    html: function(){return '<div class="welcome">'+
+      '<p class="kicker">Gold King Mine Spill &nbsp;·&nbsp; Research practice</p>'+
+      '<h2 class="q">Researching &amp; citing evidence</h2>'+
+      '<p class="lead">You will practice four skills you need for your slideshow, using a real excerpt from one of the vetted sources. Then you will do a short challenge with a second source.</p>'+
+      '<ul>'+
+        '<li><b>Find</b> the sentences that hold the evidence.</li>'+
+        '<li><b>Quote</b> exact words with quotation marks and a citation number.</li>'+
+        '<li><b>Paraphrase</b> a fact in your own words, then try Read–Cover–Write–Check.</li>'+
+        '<li><b>Cite</b> the source in the References format from your directions.</li>'+
+      '</ul>'+
+      '<p class="lead">Nothing is saved, and you do not enter your name. You can start over at any time.</p>'+
+      '<button type="button" class="bigbtn" id="btn-start">Start practice</button>'+
+      '<p class="muted">Excerpts are quoted from US EPA (2018) and Colorado Encyclopedia for classroom practice. Use the full pages when you research.</p>'+
+      '</div>';}
+  },
+  {id:'read', label:'Read the source', kind:'read',
+    html: function(){return '<p class="kicker">Step 1 of 4 &nbsp;·&nbsp; Meet the source</p>'+
+      '<h2 class="q">Read this short page carefully</h2>'+
+      '<p class="lead">This is a practice excerpt from a vetted source. Notice the title, author, site, and date at the top — you will need those later when you cite the source.</p>'+
+      epaSource(false)+
+      '<p class="hint">Tip: On your project, write the author or site and the date on your Research Notes slide while you read.</p>';}
+  },
+  {id:'find', label:'Find evidence', kind:'find', group:'epa',
+    prompt: 'A farm town along the Animas River wants to know: <b>What happened to fish and other living things after the spill?</b>',
+    hint: 'Click (or tap) every sentence that gives evidence about effects on fish or other organisms. Selected sentences get an underline. Then press Check.',
+    html: function(){return '<p class="kicker">Step 1 of 4 &nbsp;·&nbsp; Find</p>'+
+      '<h2 class="q">Find the evidence</h2>'+
+      '<p class="lead">'+this.prompt+'</p>'+
+      '<p class="hint">'+this.hint+'</p>'+
+      epaSource(true)+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';}
+  },
+  {id:'quote', label:'Quote', kind:'choice',
+    html: function(){return '<p class="kicker">Step 2 of 4 &nbsp;·&nbsp; Quote</p>'+
+      '<h2 class="q">Choose the correctly written quotation</h2>'+
+      '<p class="lead">You want to use EPA’s exact words about fish populations on a slide. A correct quotation needs <b>quotation marks</b> and a <b>numbered citation</b> like [1]. The words must match the source.</p>'+
+      '<div class="source"><div class="sh"><span class="badge">THE SOURCE SAID</span><h3 style="margin-top:6px;font-size:18px">From US EPA (2018), Biological Response Report</h3></div>'+
+      '<div class="body"><p>'+esc(S4)+'</p></div></div>'+
+      '<div class="choices" role="radiogroup" aria-label="Quotation choices">'+
+        '<button type="button" class="choice" data-key="noquotes" role="radio" aria-checked="false"><span class="tag">A</span> EPA also concluded there were no measurable changes to fish populations and bottom-dwelling organisms after the GKM release. [1]</button>'+
+        '<button type="button" class="choice" data-key="nocite" role="radio" aria-checked="false"><span class="tag">B</span> “EPA also concluded there were no measurable changes to fish populations and bottom-dwelling organisms after the GKM release.”</button>'+
+        '<button type="button" class="choice" data-key="good" role="radio" aria-checked="false"><span class="tag">C</span> “EPA also concluded there were no measurable changes to fish populations and bottom-dwelling organisms after the GKM release.” [1]</button>'+
+        '<button type="button" class="choice" data-key="changed" role="radio" aria-checked="false"><span class="tag">D</span> “EPA found that the spill destroyed fish populations and wiped out bottom-dwelling organisms.” [1]</button>'+
+      '</div>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';},
+    explain: {
+      noquotes: 'Not quite. Those are the source’s exact words, but they are missing quotation marks. Using exact words without quotation marks and a citation counts as copying.',
+      nocite: 'Not quite. The quotation marks are there, but there is no citation number. Every quote needs a number like [1] that matches a source on your References slide.',
+      good: 'Correct. The words match the source, they are in quotation marks, and the citation [1] is there.',
+      changed: 'Not quite. This has quotation marks and a citation, but the words are not in the source — and they change the meaning. The EPA did not say fish populations were destroyed.'
+    }
+  },
+  {id:'para-pick', label:'Paraphrase', kind:'choice',
+    html: function(){return '<p class="kicker">Step 3 of 4 &nbsp;·&nbsp; Paraphrase</p>'+
+      '<h2 class="q">Which is a good paraphrase?</h2>'+
+      '<p class="lead">A paraphrase is the fact in <b>your own words</b>. It still has to be accurate, and it still needs a citation. Changing only a few words still counts as copying.</p>'+
+      '<div class="source"><div class="sh"><span class="badge">THE SOURCE SAID</span><h3 style="margin-top:6px;font-size:18px">From US EPA (2018)</h3></div>'+
+      '<div class="body"><p>'+esc(S3)+'</p></div></div>'+
+      '<div class="choices" role="radiogroup" aria-label="Paraphrase choices">'+
+        '<button type="button" class="choice" data-key="close" role="radio" aria-checked="false"><span class="tag">A</span> After careful analysis, EPA found that while some fish accumulated metals immediately after the release event, levels returned to background conditions the following spring. [1]</button>'+
+        '<button type="button" class="choice" data-key="wrong" role="radio" aria-checked="false"><span class="tag">B</span> EPA found that fish were unharmed by the spill and never took in any metals. [1]</button>'+
+        '<button type="button" class="choice" data-key="good" role="radio" aria-checked="false"><span class="tag">C</span> Some fish took in metals right after the spill, but those metal levels were back to normal by the next spring. [1]</button>'+
+      '</div>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';},
+    explain: {
+      close: 'Not quite. This only drops a few words from the source. That is too close, and it counts as copying. A paraphrase should sound like you, not like the page with small changes.',
+      wrong: 'Not quite. This is in different words, but it changes the meaning. The source says some fish did take in metals at first, then levels returned to background the next spring.',
+      good: 'Correct. This uses different wording, keeps the fact accurate, and cites the source with [1].'
+    }
+  },
+  {id:'para-write', label:'Write a paraphrase', kind:'write',
+    html: function(){return '<p class="kicker">Step 3 of 4 &nbsp;·&nbsp; Read–Cover–Write–Check</p>'+
+      '<h2 class="q">Now write a paraphrase yourself</h2>'+
+      '<p class="lead">Read the sentence. Cover it. Write the fact in your own words and add [1]. Then reveal the source and check your work.</p>'+
+      '<div id="coverbox"><div class="srcbox" id="srcbox">'+esc(S4)+'</div>'+
+      '<div class="lid" id="lid">Source hidden — write the fact from memory.</div></div>'+
+      '<div style="display:flex;gap:10px;margin:12px 0;flex-wrap:wrap">'+
+        '<button type="button" class="bigbtn" id="btn-cover" style="font-size:18px;min-height:48px;padding:10px 18px">Cover the source</button>'+
+        '<button type="button" class="bigbtn" id="btn-reveal" style="font-size:18px;min-height:48px;padding:10px 18px;background:#444" disabled>Reveal and check</button>'+
+      '</div>'+
+      '<label for="para" style="font:bold 18px Arial,sans-serif">Your paraphrase</label>'+
+      '<textarea id="para" maxlength="800" placeholder="Write the fact in your own words. Add [1] at the end."></textarea>'+
+      '<div id="compare" class="compare" hidden></div>'+
+      '<ul class="checks" id="checks" hidden>'+
+        '<li><label><input type="checkbox" id="chk-own"> I used my own words (I did not just swap a few words).</label></li>'+
+        '<li><label><input type="checkbox" id="chk-accurate"> I kept the fact accurate (I did not change the meaning).</label></li>'+
+        '<li><label><input type="checkbox" id="chk-cited"> I cited the source with [1].</label></li>'+
+      '</ul>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';}
+  },
+  {id:'cite', label:'Cite the source', kind:'cite',
+    target: ['US EPA','(2018)','Biological Response Report,','US EPA.','Available at:','https://www.epa.gov/goldkingmine/biological-response-report','(Accessed: 18 November 2026).'],
+    html: function(){return '<p class="kicker">Step 4 of 4 &nbsp;·&nbsp; Cite</p>'+
+      '<h2 class="q">Build the References entry</h2>'+
+      '<p class="lead">Click the pieces in the correct order. This matches the format in your project directions:</p>'+
+      '<p class="hint">Author or Organization (Year) Title, Website. Available at: URL (Accessed: date).</p>'+
+      '<div class="source"><div class="sh"><span class="badge">SOURCE DETAILS</span>'+
+      '<h3>Biological Response Report</h3>'+
+      '<div class="meta">Author / organization: US EPA &nbsp;·&nbsp; Year: 2018 &nbsp;·&nbsp; Website: US EPA<br>URL: https://www.epa.gov/goldkingmine/biological-response-report &nbsp;·&nbsp; Accessed: 18 November 2026</div></div></div>'+
+      '<p style="font:bold 18px Arial,sans-serif;margin:8px 0 4px">Pieces — click to add</p>'+
+      '<div class="bank" id="bank"></div>'+
+      '<p style="font:bold 18px Arial,sans-serif;margin:8px 0 4px">Your citation (click a piece to remove it)</p>'+
+      '<div class="assemble" id="assemble" aria-label="Citation you are building"><span class="ph">Click pieces above to build the citation.</span></div>'+
+      '<div class="preview" id="preview"></div>'+
+      '<div style="margin-top:10px"><button type="button" class="sec" id="btn-reset-cite" style="font:bold 16px Arial,sans-serif;padding:8px 14px;border-radius:10px;border:0;background:#444;color:#fff;cursor:pointer;min-height:44px">Reset pieces</button></div>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';}
+  },
+  {id:'challenge-find', label:'Challenge: Find numbers', kind:'find', group:'co',
+    prompt: 'This second source has measurements. <b>Click every sentence that includes a number</b> (gallons, pH, or a number of days).',
+    hint: 'Look carefully — some sentences describe the path of the water or its color but do not include a number.',
+    html: function(){return '<p class="kicker">Challenge &nbsp;·&nbsp; A second source</p>'+
+      '<h2 class="q">Find the sentences with numbers</h2>'+
+      '<p class="lead">'+this.prompt+'</p>'+
+      '<p class="hint">'+this.hint+'</p>'+
+      coSource(true)+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';}
+  },
+  {id:'challenge-number', label:'Challenge: Keep the number accurate', kind:'choice',
+    html: function(){return '<p class="kicker">Challenge &nbsp;·&nbsp; Keep the number accurate</p>'+
+      '<h2 class="q">Which statement keeps the number accurate?</h2>'+
+      '<p class="lead">When you paraphrase a number, the number itself must stay correct. Which option matches the source?</p>'+
+      '<div class="source"><div class="sh"><span class="badge">THE SOURCE SAID</span><h3 style="margin-top:6px;font-size:18px">From Colorado Encyclopedia (no date)</h3></div>'+
+      '<div class="body"><p>'+esc(T6)+'</p></div></div>'+
+      '<div class="choices" role="radiogroup" aria-label="Number choices">'+
+        '<button type="button" class="choice" data-key="backwards" role="radio" aria-checked="false"><span class="tag">A</span> The water in the Animas River became less acidic, and the pH rose from 5.8 to 7.8. [2]</button>'+
+        '<button type="button" class="choice" data-key="good" role="radio" aria-checked="false"><span class="tag">B</span> The spill made the Animas River more acidic. Its pH dropped from 7.8 to 5.8. [2]</button>'+
+        '<button type="button" class="choice" data-key="wrongnum" role="radio" aria-checked="false"><span class="tag">C</span> The spill made the Animas River more acidic. Its pH dropped from 8.7 to 5.8. [2]</button>'+
+      '</div>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';},
+    explain: {
+      backwards: 'Not quite. The source says the water became more acidic, and the pH dropped from 7.8 to 5.8. A lower pH means more acidic. This option flips the direction and the numbers.',
+      good: 'Correct. The pH dropped from 7.8 to 5.8, which means the water became more acidic. The numbers match the source, and the citation is there.',
+      wrongnum: 'Not quite. The direction is right, but one number was changed. The source says the pH dropped from 7.8 to 5.8, not from 8.7.'
+    }
+  },
+  {id:'challenge-cite', label:'Challenge: Cite', kind:'cite',
+    target: ['Gold King Mine Spill | Colorado Encyclopedia','(no date).','Available at:','https://coloradoencyclopedia.org/article/gold-king-mine-spill','(Accessed: 18 November 2026).'],
+    html: function(){return '<p class="kicker">Challenge &nbsp;·&nbsp; Cite</p>'+
+      '<h2 class="q">Build the References entry for source 2</h2>'+
+      '<p class="lead">This source has no single date, so write <b>(no date)</b>. Click the pieces in the correct order.</p>'+
+      '<p class="hint">Title | Website (no date). Available at: URL (Accessed: date).</p>'+
+      '<div class="source"><div class="sh"><span class="badge">SOURCE DETAILS</span>'+
+      '<h3>Gold King Mine Spill</h3>'+
+      '<div class="meta">Website: Colorado Encyclopedia &nbsp;·&nbsp; Date: no date<br>URL: https://coloradoencyclopedia.org/article/gold-king-mine-spill &nbsp;·&nbsp; Accessed: 18 November 2026</div></div></div>'+
+      '<p style="font:bold 18px Arial,sans-serif;margin:8px 0 4px">Pieces — click to add</p>'+
+      '<div class="bank" id="bank"></div>'+
+      '<p style="font:bold 18px Arial,sans-serif;margin:8px 0 4px">Your citation (click a piece to remove it)</p>'+
+      '<div class="assemble" id="assemble" aria-label="Citation you are building"><span class="ph">Click pieces above to build the citation.</span></div>'+
+      '<div class="preview" id="preview"></div>'+
+      '<div style="margin-top:10px"><button type="button" class="sec" id="btn-reset-cite" style="font:bold 16px Arial,sans-serif;padding:8px 14px;border-radius:10px;border:0;background:#444;color:#fff;cursor:pointer;min-height:44px">Reset pieces</button></div>'+
+      '<div class="feedback" id="feedback" role="status" aria-live="polite"></div>';}
+  },
+  {id:'done', label:'Finished', kind:'read',
+    html: function(){return '<div class="done">'+
+      '<p class="kicker">You’re done</p>'+
+      '<h2 class="q">Nice work — use these habits on your project</h2>'+
+      '<div class="card"><b>Find.</b> Underline the sentences that actually hold the evidence, not just the sentences that introduce the page.</div>'+
+      '<div class="card"><b>Quote.</b> Exact words need quotation marks and a numbered citation like [1].</div>'+
+      '<div class="card"><b>Paraphrase.</b> Use your own words, keep the fact (and any number) accurate, and still cite the source. Use Read–Cover–Write–Check when you take notes.</div>'+
+      '<div class="card"><b>Cite.</b> On your References slide, include the author or organization, the year (or “no date”), the title, the website, the URL, and the date you accessed it.</div>'+
+      '<p class="lead">Use at least <b>3</b> vetted sources. Take notes in your own words on your Research Notes slide. Write down the author or site and the date for each source.</p>'+
+      '<button type="button" class="bigbtn" id="btn-restart">Start over</button>'+
+      '<p class="muted">Excerpts quoted for classroom practice from: US EPA (2018) Biological Response Report, https://www.epa.gov/goldkingmine/biological-response-report; and Gold King Mine Spill | Colorado Encyclopedia (no date), https://coloradoencyclopedia.org/article/gold-king-mine-spill (Accessed: 18 November 2026).</p>'+
+      '</div>';}
+  }
+];
+
+let cur = 0;
+let checked = {}; // step id -> whether passed
+let selectedChoice = null;
+let citeOrder = [];
+let inkMode = 'select'; // select | pen | hl | erase
+let inkColor = '#000000';
+let inkByStep = {};
+let live = null;
+let scale = 1;
+let writeState = {covered:false, revealed:false};
+
+const content = document.getElementById('content');
+const stage = document.getElementById('stage');
+const sizer = document.getElementById('sizer');
+const slot = document.getElementById('slot');
+const wrap = document.getElementById('wrap');
+const cv = document.getElementById('ink');
+const ctx = cv.getContext('2d');
+
+function strokes(){
+  const id = STEPS[cur].id;
+  if(!inkByStep[id]) inkByStep[id] = [];
+  return inkByStep[id];
+}
+function layout(){
+  const sw = 1280;
+  const sh = Math.max(stage.scrollHeight, stage.offsetHeight, 620);
+  sizer.style.height = sh+'px';
+  const availW = wrap.clientWidth;
+  scale = Math.max(0.4, Math.min(1, (availW - 16) / sw));
+  // leave a little side margin
+  const left = Math.max(0, Math.round((availW - sw*scale)/2));
+  sizer.style.transform = 'scale('+scale+')';
+  sizer.style.left = left+'px';
+  slot.style.width = '100%';
+  slot.style.height = Math.ceil(sh*scale)+'px';
+  sizeCanvas(sw, sh);
+}
+function sizeCanvas(w,h){
+  const dpr = window.devicePixelRatio || 1;
+  const bw = Math.round(w*dpr), bh = Math.round(h*dpr);
+  if(cv.width!==bw || cv.height!==bh){
+    cv.width=bw; cv.height=bh;
+    cv.style.width=w+'px'; cv.style.height=h+'px';
+  }
+  redraw();
+}
+function redraw(){
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  strokes().forEach(drawStroke);
+}
+function drawStroke(s){
+  const pts=s.pts; if(!pts.length) return;
+  ctx.save();
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  if(s.t==='erase'){ ctx.globalCompositeOperation='destination-out'; ctx.strokeStyle='#000'; ctx.lineWidth=s.w; }
+  else if(s.t==='hl'){ ctx.globalAlpha=0.35; ctx.strokeStyle=s.c; ctx.lineWidth=s.w; ctx.globalCompositeOperation='multiply'; }
+  else { ctx.strokeStyle=s.c; ctx.fillStyle=s.c; ctx.lineWidth=s.w; }
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  if(pts.length===1) ctx.lineTo(pts[0][0]+0.1, pts[0][1]+0.1);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.stroke();
+  ctx.restore();
+}
+function pt(e){
+  const r = stage.getBoundingClientRect();
+  return [Math.round((e.clientX-r.left)/scale*10)/10, Math.round((e.clientY-r.top)/scale*10)/10];
+}
+function onDown(e){
+  if(inkMode==='select') return;
+  if(e.cancelable) e.preventDefault();
+  try{ if(cv.setPointerCapture && e.pointerId!=null) cv.setPointerCapture(e.pointerId); }catch(err){}
+  const w = inkMode==='erase'?36 : inkMode==='hl'?22 : 3.5;
+  const c = inkMode==='hl' ? '#ffeb3b' : inkColor;
+  live = {t: inkMode==='erase'?'erase':inkMode, c:c, w:w, pts:[pt(e)]};
+  strokes().push(live);
+  redraw();
+}
+function onMove(e){
+  if(!live) return;
+  live.pts.push(pt(e));
+  redraw();
+}
+function onUp(){ live=null; }
+cv.addEventListener('pointerdown', onDown);
+cv.addEventListener('pointermove', onMove);
+cv.addEventListener('pointerup', onUp);
+cv.addEventListener('pointercancel', onUp);
+
+function setInkMode(m){
+  inkMode = m;
+  document.body.classList.toggle('draw', m!=='select');
+  document.getElementById('btn-select').classList.toggle('act', m==='select');
+  document.getElementById('btn-pen').classList.toggle('act', m==='pen');
+  document.getElementById('btn-hl').classList.toggle('act', m==='hl');
+  document.getElementById('btn-erase').classList.toggle('act', m==='erase');
+  document.getElementById('btn-select').textContent = m==='select' ? '✎ Off — Select' : '✎ Off — Select';
+}
+document.getElementById('btn-select').onclick=function(){ setInkMode('select'); };
+document.getElementById('btn-pen').onclick=function(){ setInkMode('pen'); };
+document.getElementById('btn-hl').onclick=function(){ setInkMode('hl'); };
+document.getElementById('btn-erase').onclick=function(){ setInkMode('erase'); };
+document.querySelectorAll('.sw').forEach(function(b){
+  b.onclick=function(){
+    inkColor=b.getAttribute('data-c');
+    document.querySelectorAll('.sw').forEach(function(x){x.classList.toggle('act', x===b);});
+    if(inkMode==='select'||inkMode==='erase'||inkMode==='hl') setInkMode('pen');
+  };
+});
+document.getElementById('btn-undo').onclick=undoInk;
+document.getElementById('btn-clear').onclick=clearInk;
+function undoInk(){
+  const s=strokes();
+  if(!s.length) return;
+  s.pop();
+  redraw();
+}
+function clearInk(){
+  const s=strokes();
+  if(!s.length) return;
+  inkByStep[STEPS[cur].id]=[];
+  redraw();
+}
+document.getElementById('btn-projector').onclick=function(){
+  document.body.classList.toggle('projector');
+  this.classList.toggle('act', document.body.classList.contains('projector'));
+  requestAnimationFrame(function(){ layout(); });
+};
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey||e.metaKey) && (e.key==='z'||e.key==='Z') && !e.shiftKey){
+    const t=e.target;
+    if(t && (t.tagName==='TEXTAREA'||t.tagName==='INPUT')) return;
+    e.preventDefault();
+    undoInk();
+  }
+});
+
+function show(i){
+  live=null;
+  cur=Math.max(0, Math.min(STEPS.length-1, i));
+  const step=STEPS[cur];
+  content.innerHTML=step.html();
+  document.getElementById('stepLabel').textContent=step.label;
+  document.getElementById('count').textContent=(cur+1)+' / '+STEPS.length;
+  document.getElementById('prog').style.width = ((cur)/(STEPS.length-1)*100)+'%';
+  document.getElementById('btn-back').disabled = cur===0;
+  const start=document.getElementById('btn-start');
+  if(start) start.onclick=function(){ show(cur+1); };
+  const restart=document.getElementById('btn-restart');
+  if(restart) restart.onclick=function(){ checked={}; citeOrder=[]; writeState={covered:false,revealed:false}; show(0); };
+  wireStep(step);
+  updateNav(step);
+  wrap.scrollTop=0;
+  requestAnimationFrame(function(){ layout(); });
+}
+function updateNav(step){
+  const checkBtn=document.getElementById('btn-check');
+  const nextBtn=document.getElementById('btn-next');
+  const needsCheck = (step.kind==='find'||step.kind==='choice'||step.kind==='cite');
+  const passed = !!checked[step.id];
+  checkBtn.style.display = needsCheck && !passed ? '' : 'none';
+  if(step.id==='welcome'){ nextBtn.textContent='Start ▶'; nextBtn.disabled=false; }
+  else if(step.id==='done'){ nextBtn.style.display='none'; }
+  else { nextBtn.style.display=''; nextBtn.textContent='Next ▶'; nextBtn.disabled = needsCheck && !passed; }
+  if(step.kind==='write'){ nextBtn.disabled = !writePassed(); nextBtn.style.display=''; checkBtn.style.display='none'; }
+  if(step.kind==='read' && step.id!=='done' && step.id!=='welcome'){ nextBtn.disabled=false; }
+}
+function writePassed(){
+  return !!(document.getElementById('chk-own')&&document.getElementById('chk-own').checked
+    && document.getElementById('chk-accurate')&&document.getElementById('chk-accurate').checked
+    && document.getElementById('chk-cited')&&document.getElementById('chk-cited').checked
+    && writeState.revealed
+    && (document.getElementById('para')||{}).value && document.getElementById('para').value.trim().length>8);
+}
+function wireStep(step){
+  selectedChoice=null;
+  if(step.kind==='find'){
+    content.querySelectorAll('.sent').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(checked[step.id]) return;
+        // clear result styles from a previous Check, then toggle this sentence
+        content.querySelectorAll('.sent').forEach(function(x){
+          if(x.classList.contains('ok')||x.classList.contains('bad')) x.classList.add('on');
+          x.classList.remove('ok','bad','miss');
+        });
+        const on=!b.classList.contains('on');
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on?'true':'false');
+        setFeedback('','');
+      });
+    });
+  }
+  if(step.kind==='choice'){
+    content.querySelectorAll('.choice').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(checked[step.id]) return;
+        content.querySelectorAll('.choice').forEach(function(x){x.classList.remove('on','ok','bad'); x.setAttribute('aria-checked','false');});
+        b.classList.add('on'); b.setAttribute('aria-checked','true');
+        selectedChoice=b.getAttribute('data-key');
+        setFeedback('','');
+      });
+    });
+  }
+  if(step.kind==='cite'){
+    citeOrder=[];
+    renderCite(step);
+    const rst=document.getElementById('btn-reset-cite');
+    if(rst) rst.onclick=function(){ if(checked[step.id]) return; citeOrder=[]; renderCite(step); setFeedback('',''); };
+  }
+  if(step.kind==='write') wireWrite();
+}
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+function renderCite(step){
+  const bank=document.getElementById('bank');
+  const assemble=document.getElementById('assemble');
+  const preview=document.getElementById('preview');
+  if(!bank) return;
+  if(!bank.dataset.ready){
+    const pieces=shuffle(step.target.map(function(t,i){return {t:t,i:i};}));
+    bank.innerHTML='';
+    pieces.forEach(function(p){
+      const b=document.createElement('button');
+      b.type='button'; b.className='cite-piece'; b.dataset.i=String(p.i); b.dataset.text=p.t; b.textContent=p.t;
+      bank.appendChild(b);
+    });
+    bank.dataset.ready='1';
+    bank.addEventListener('click', function(e){
+      const b=e.target.closest('.cite-piece'); if(!b||checked[step.id]) return;
+      const i=Number(b.dataset.i);
+      if(citeOrder.indexOf(i)>=0) return;
+      citeOrder.push(i);
+      renderCite(step);
+    });
+  }
+  bank.querySelectorAll('.cite-piece').forEach(function(b){
+    b.classList.toggle('used', citeOrder.indexOf(Number(b.dataset.i))>=0);
+  });
+  assemble.innerHTML='';
+  if(!citeOrder.length){ assemble.innerHTML='<span class="ph">Click pieces above to build the citation.</span>'; }
+  else {
+    citeOrder.forEach(function(i, pos){
+      const b=document.createElement('button');
+      b.type='button'; b.className='cite-piece'; b.style.borderStyle='solid';
+      b.textContent=step.target[i];
+      b.onclick=function(){ if(checked[step.id]) return; citeOrder.splice(pos,1); renderCite(step); };
+      assemble.appendChild(b);
+    });
+  }
+  preview.textContent = citeOrder.map(function(i){return step.target[i];}).join(' ');
+}
+function setFeedback(kind, msg){
+  const fb=document.getElementById('feedback');
+  if(!fb) return;
+  if(!msg){ fb.className='feedback'; fb.textContent=''; return; }
+  fb.className='feedback show '+(kind||'info');
+  fb.innerHTML=msg;
+  requestAnimationFrame(function(){ try{ fb.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){ fb.scrollIntoView(true); } });
+}
+function checkFind(step){
+  const buttons=[].slice.call(content.querySelectorAll('.sent'));
+  let right=0, wrong=0, missed=0;
+  buttons.forEach(function(b){
+    const ev=b.getAttribute('data-ev')==='1';
+    const on=b.classList.contains('on');
+    b.classList.remove('ok','bad','miss','on');
+    if(ev && on){ b.classList.add('ok'); right++; }
+    else if(!ev && on){ b.classList.add('bad'); wrong++; }
+    else if(ev && !on){ b.classList.add('miss'); missed++; }
+    b.setAttribute('aria-pressed', ev?'true':'false');
+  });
+  if(wrong===0 && missed===0 && right>0){
+    checked[step.id]=true;
+    setFeedback('ok','Correct. You found the evidence sentences and left the others alone.');
+    if(step.id==='find'){
+      setFeedback('ok','Correct. The evidence is that some fish accumulated metals right after the spill, but levels returned to background the next spring, and EPA found no measurable changes to fish populations or bottom-dwelling organisms.');
+    }
+    if(step.id==='challenge-find'){
+      setFeedback('ok','Correct. Those sentences include the amount of wastewater (3 million gallons), a 300-day comparison, and the pH change from 7.8 to 5.8.');
+    }
+  } else {
+    let parts=[];
+    if(missed) parts.push('You missed '+missed+' evidence sentence'+(missed>1?'s':'')+' (dashed outline).');
+    if(wrong) parts.push('You underlined '+wrong+' sentence'+(wrong>1?'s that do not':' that does not')+' answer the question (marked in red).');
+    setFeedback('bad','Not quite. '+parts.join(' ')+' Try again.');
+    // Result styles stay until the student clicks a sentence or presses Check again.
+  }
+  updateNav(step);
+}
+function checkChoice(step){
+  if(!selectedChoice){ setFeedback('bad','Select an answer first.'); return; }
+  const good = selectedChoice==='good';
+  content.querySelectorAll('.choice').forEach(function(b){
+    const k=b.getAttribute('data-key');
+    b.classList.remove('on','ok','bad');
+    if(k==='good' && (good || true) && selectedChoice){
+      if(k===selectedChoice && good) b.classList.add('ok');
+      else if(k===selectedChoice && !good) b.classList.add('bad');
+      else if(k==='good' && !good) { /* reveal later maybe */ }
+    } else if(k===selectedChoice && !good) b.classList.add('bad');
+    if(k===selectedChoice && good) b.classList.add('ok');
+  });
+  const msg = step.explain[selectedChoice];
+  if(good){
+    checked[step.id]=true;
+    setFeedback('ok', msg);
+    content.querySelectorAll('.choice').forEach(function(b){ if(b.getAttribute('data-key')==='good') b.classList.add('ok'); });
+  } else {
+    setFeedback('bad', msg);
+  }
+  updateNav(step);
+}
+function checkCite(step){
+  const ok = citeOrder.length===step.target.length && citeOrder.every(function(v,i){return v===i;});
+  if(ok){
+    checked[step.id]=true;
+    setFeedback('ok','Correct. That is a complete References entry in the right order.');
+  } else {
+    if(!citeOrder.length){ setFeedback('bad','Add the pieces in order, then press Check.'); }
+    else setFeedback('bad','Not quite. The order or the pieces do not match the format yet. Click a piece in your citation to remove it, or press Reset pieces and try again.');
+  }
+  updateNav(step);
+}
+function wireWrite(){
+  const box=document.getElementById('coverbox');
+  const cover=document.getElementById('btn-cover');
+  const reveal=document.getElementById('btn-reveal');
+  const para=document.getElementById('para');
+  const checks=document.getElementById('checks');
+  const compare=document.getElementById('compare');
+  writeState={covered:false, revealed:false};
+  cover.onclick=function(){
+    writeState.covered=true;
+    box.classList.add('covered');
+    reveal.disabled=false;
+    cover.disabled=true;
+    para.focus();
+  };
+  reveal.onclick=function(){
+    const text=(para.value||'').trim();
+    if(!text){ setFeedback('bad','Write your paraphrase first, then reveal.'); return; }
+    writeState.revealed=true;
+    box.classList.remove('covered');
+    box.style.display='none';
+    cover.style.display='none';
+    reveal.style.display='none';
+    checks.hidden=false;
+    compare.hidden=false;
+    requestAnimationFrame(function(){ try{ checks.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){ checks.scrollIntoView(true); } });
+    compare.innerHTML='<div class="col"><h3>The source</h3><p>'+esc(S4)+'</p></div><div class="col"><h3>Your paraphrase</h3><p>'+esc(text)+'</p></div>';
+    const close=tooClose(text, S4);
+    let msg='Now use the checklist. Does your sentence sound like you? Is the fact still right? Did you add [1]?';
+    if(close) msg='This looks very close to the source wording. Try rewriting it in your own words, or use quotation marks if you need the exact words. Then use the checklist.';
+    if(!/\[1\]/.test(text)) msg += ' Don’t forget the citation [1].';
+    setFeedback(close?'bad':'info', msg);
+    updateNav(STEPS[cur]);
+    requestAnimationFrame(function(){ try{ checks.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){ checks.scrollIntoView(true); } });
+  };
+  ['chk-own','chk-accurate','chk-cited'].forEach(function(id){
+    document.getElementById(id).onchange=function(){ updateNav(STEPS[cur]); };
+  });
+  para.addEventListener('input', function(){ if(writeState.revealed) updateNav(STEPS[cur]); });
+}
+function tooClose(a,b){
+  const norm=function(s){return s.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(function(w){return w.length>3 && !/^(that|this|with|from|were|when|after|also|there|were|their)$/.test(w);});};
+  const A=norm(a), B=norm(b);
+  if(A.length<5) return false;
+  let hit=0; const set={}; B.forEach(function(w){set[w]=1;});
+  A.forEach(function(w){ if(set[w]) hit++; });
+  return (hit/A.length)>0.72;
+}
+
+document.getElementById('btn-back').onclick=function(){ show(cur-1); };
+document.getElementById('btn-next').onclick=function(){
+  if(cur===0){ show(1); return; }
+  if(cur<STEPS.length-1) show(cur+1);
+};
+document.getElementById('btn-check').onclick=function(){
+  const step=STEPS[cur];
+  if(step.kind==='find') checkFind(step);
+  else if(step.kind==='choice') checkChoice(step);
+  else if(step.kind==='cite') checkCite(step);
+};
+
+window.addEventListener('resize', layout);
+if(window.ResizeObserver){
+  new ResizeObserver(function(){ layout(); }).observe(wrap);
+  new ResizeObserver(function(){ layout(); }).observe(stage);
+}
+show(0);
+})();
+</script>
+</body>
+</html>
